@@ -1,0 +1,12 @@
+# OpenAI Codex MCP config.
+# Merge this into ~/.codex/config.toml. Codex launches the server over stdio.
+# Replace the command path and the token (read from env, never from prompts).
+
+[mcp_servers.runtz]
+command = "/usr/local/bin/runtz-mcp"
+args = []
+
+[mcp_servers.runtz.env]
+RUNTZ_ENDPOINT = "https://engine.runtz.dev"
+RUNTZ_TOKEN = "rtz_live_replace_me"
+RUNTZ_MCP_BIN = "runtz"

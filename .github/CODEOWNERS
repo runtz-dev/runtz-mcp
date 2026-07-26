@@ -1,0 +1,10 @@
+# Default owners. Pull requests require review from the runtz core team before
+# merging into develop or main.
+*                       @runtz-dev/core
+
+# Transport and deployment plumbing get extra scrutiny.
+/cmd/runtz-mcp/         @runtz-dev/core
+/internal/mcp/          @runtz-dev/core
+/.github/               @runtz-dev/core
+/helm/                  @runtz-dev/core
+/scripts/               @runtz-dev/core

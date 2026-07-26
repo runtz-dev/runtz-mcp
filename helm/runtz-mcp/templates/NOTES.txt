@@ -1,0 +1,16 @@
+runtz-mcp is deployed (docs-only over the MCP streamable HTTP transport).
+
+{{- if .Values.ingress.enabled }}
+Reachable at:
+{{- range .Values.ingress.hosts }}
+  https://{{ .host }}/mcp
+{{- end }}
+{{- else }}
+Service {{ include "runtz-mcp.fullname" . }}:{{ .Values.service.port }} (ClusterIP).
+Port-forward to try it:
+
+  kubectl port-forward svc/{{ include "runtz-mcp.fullname" . }} 8080:{{ .Values.service.port }}
+  curl -s localhost:8080/healthz
+{{- end }}
+
+Point an MCP client at POST /mcp on that host to read the runtz documentation.
