@@ -8,7 +8,7 @@
 #     --set image.tag="dev<sha>"
 
 image:
-  repository: registry-docker-registry.registry.svc.cluster.local:5000/runtz-mcp
+  repository: registry.local:5000/runtz-mcp
   tag: ""
   pullPolicy: Always
 
