@@ -1,0 +1,63 @@
+# Default values for the hosted runtz MCP server.
+#
+# The hosted server is docs-only: it exposes the runtz documentation over the
+# MCP streamable HTTP transport. Scan tools are never served here (scans need
+# the user's code on the machine running the CLI).
+
+replicaCount: 1
+
+image:
+  repository: runtzdev/runtz-mcp
+  # Defaults to the chart appVersion when empty.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+# Non-secret configuration rendered into a ConfigMap and injected as env.
+env:
+  # Listen address enables the HTTP transport (and forces docs-only).
+  RUNTZ_MCP_HTTP: ":8080"
+  # Advertised backend endpoint for the docs (no token is used server-side).
+  RUNTZ_ENDPOINT: "https://engine.runtz.dev"
+
+extraEnv: []
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts: []
+  # Example:
+  # hosts:
+  #   - host: mcp.runtz.dev
+  #     paths:
+  #       - path: /
+  #         pathType: Prefix
+  tls: []

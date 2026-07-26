@@ -1,0 +1,26 @@
+# runtz-mcp development environment (mcp-dev.runtz.dev).
+#
+# Image is built and pushed by the dev pipeline to the in-cluster registry;
+# the tag is injected at deploy time with --set.
+#
+#   helm upgrade --install runtz-mcp ./helm/runtz-mcp \
+#     -f helm/environments/dev/values.yaml \
+#     --set image.tag="dev<sha>"
+
+image:
+  repository: registry.local:5000/runtz-mcp
+  tag: ""
+  pullPolicy: Always
+
+env:
+  RUNTZ_MCP_HTTP: ":8080"
+  RUNTZ_ENDPOINT: "https://engine-dev.runtz.dev"
+
+ingress:
+  enabled: true
+  className: "cloudflare-tunnel"
+  hosts:
+    - host: mcp-dev.runtz.dev
+      paths:
+        - path: /
+          pathType: Prefix

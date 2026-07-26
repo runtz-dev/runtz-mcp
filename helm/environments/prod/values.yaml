@@ -1,0 +1,27 @@
+# runtz-mcp production environment (mcp.runtz.dev).
+#
+# Uses the generic public Docker Hub image. Deployed by the prod pipeline on
+# release publish, installing the chart from ChartMuseum with the tag injected
+# via --set.
+#
+#   helm upgrade --install runtz-mcp runtz/runtz-mcp \
+#     -f helm/environments/prod/values.yaml \
+#     --set image.tag="<version>"
+
+image:
+  repository: runtzdev/runtz-mcp
+  tag: ""
+  pullPolicy: IfNotPresent
+
+env:
+  RUNTZ_MCP_HTTP: ":8080"
+  RUNTZ_ENDPOINT: "https://engine.runtz.dev"
+
+ingress:
+  enabled: true
+  className: "cloudflare-tunnel"
+  hosts:
+    - host: mcp.runtz.dev
+      paths:
+        - path: /
+          pathType: Prefix
