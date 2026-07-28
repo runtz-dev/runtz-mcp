@@ -30,8 +30,9 @@ func (s *Server) HandleMessage(ctx context.Context, raw []byte) []byte {
 }
 
 // forOutput returns a shallow copy of the server whose responses are written to
-// w, so a single request can be dispatched without touching the shared stdio
-// encoder. The tool/resource registries are shared by reference (read-only).
+// w, so concurrent requests each get their own encoder rather than racing on
+// one shared writer. The tool/resource registries are shared by reference
+// (read-only).
 func (s *Server) forOutput(w io.Writer) *Server {
 	return &Server{
 		name:         s.name,

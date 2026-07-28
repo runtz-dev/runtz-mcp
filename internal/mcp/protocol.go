@@ -1,7 +1,7 @@
 // Package mcp implements a minimal, dependency-free Model Context Protocol
-// server over stdio using JSON-RPC 2.0. It intentionally avoids any third party
-// modules so the server builds and runs fully offline with just the Go
-// standard library.
+// server over the streamable HTTP transport using JSON-RPC 2.0. It
+// intentionally avoids any third party modules so the server builds with
+// just the Go standard library.
 //
 // The protocol surface implemented here is the subset runtz needs:
 //   - initialize / notifications/initialized
