@@ -1,14 +1,9 @@
 {
-  "$comment": "Claude Code / Claude Desktop MCP config. For Claude Code, save this as .mcp.json in your project root (or merge the mcpServers block into ~/.claude.json). For Claude Desktop, merge into claude_desktop_config.json. Replace the binary path and token. The token is read from env, never from prompts.",
+  "$comment": "Claude Code / Claude Desktop MCP config. For Claude Code, save this as .mcp.json in your project root (or merge the mcpServers block into ~/.claude.json). For Claude Desktop, merge into claude_desktop_config.json. Nothing to install — this points at the runtz-hosted docs server.",
   "mcpServers": {
     "runtz": {
-      "command": "/usr/local/bin/runtz-mcp",
-      "args": [],
-      "env": {
-        "RUNTZ_ENDPOINT": "https://engine.runtz.dev",
-        "RUNTZ_TOKEN": "rtz_live_replace_me",
-        "RUNTZ_MCP_BIN": "runtz"
-      }
+      "type": "http",
+      "url": "https://mcp.runtz.dev/mcp"
     }
   }
 }

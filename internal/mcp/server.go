@@ -1,11 +1,9 @@
 package mcp
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"sync"
 )
 
@@ -34,7 +32,8 @@ type Resource struct {
 	Read        func(ctx context.Context) (string, error)
 }
 
-// Server is a stdio JSON-RPC MCP server.
+// Server is a JSON-RPC MCP server, dispatched per-request over HTTP (see
+// HandleMessage/MessageHandler in http.go).
 type Server struct {
 	name    string
 	version string
@@ -97,35 +96,6 @@ func (s *Server) AddResource(r *Resource) {
 	}
 	s.resources = append(s.resources, r)
 	s.resIndex[r.URI] = r
-}
-
-// Serve runs the read/dispatch loop until the input stream closes or the context
-// is cancelled. Messages are newline-delimited JSON values, which both the
-// official SDKs and the reference stdio transport accept.
-func (s *Server) Serve(ctx context.Context, in io.Reader, out io.Writer) error {
-	s.enc = json.NewEncoder(out)
-	reader := bufio.NewReaderSize(in, 1<<20)
-	dec := json.NewDecoder(reader)
-
-	for {
-		if err := ctx.Err(); err != nil {
-			return err
-		}
-
-		var msg message
-		if err := dec.Decode(&msg); err != nil {
-			if err == io.EOF {
-				return nil
-			}
-			// A malformed frame should not kill the server; report and continue.
-			s.logf("decode error: %v", err)
-			s.respondError(nil, codeParseError, "parse error", err.Error())
-			// json.Decoder cannot reliably resync mid-stream, so stop here.
-			return nil
-		}
-
-		s.dispatch(ctx, &msg)
-	}
 }
 
 func (s *Server) dispatch(ctx context.Context, msg *message) {

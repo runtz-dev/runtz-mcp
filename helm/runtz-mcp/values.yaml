@@ -1,8 +1,8 @@
 # Default values for the hosted runtz MCP server.
 #
-# The hosted server is docs-only: it exposes the runtz documentation over the
-# MCP streamable HTTP transport. Scan tools are never served here (scans need
-# the user's code on the machine running the CLI).
+# This server is docs-only: it exposes the runtz documentation over the MCP
+# streamable HTTP transport. There is no other mode — scans need the user's
+# code on the machine running the CLI, so they're never wired in here.
 
 replicaCount: 1
 
@@ -23,10 +23,7 @@ service:
 
 # Non-secret configuration rendered into a ConfigMap and injected as env.
 env:
-  # Listen address enables the HTTP transport (and forces docs-only).
-  RUNTZ_MCP_HTTP: ":8080"
-  # Advertised backend endpoint for the docs (no token is used server-side).
-  RUNTZ_ENDPOINT: "https://engine.runtz.dev"
+  RUNTZ_MCP_ADDR: ":8080"
 
 extraEnv: []
 

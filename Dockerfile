@@ -18,8 +18,8 @@ USER runtz
 
 COPY --from=build /out/runtz-mcp /usr/local/bin/runtz-mcp
 
-# Hosted deployments serve the streamable HTTP transport (docs-only). The Helm
-# chart sets RUNTZ_MCP_HTTP=:8080; stdio mode is used when it is unset.
+# Always serves the streamable HTTP transport (docs-only). The Helm chart
+# sets RUNTZ_MCP_ADDR=:8080.
 EXPOSE 8080
 
 ENTRYPOINT ["runtz-mcp"]

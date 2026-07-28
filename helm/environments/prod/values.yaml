@@ -14,8 +14,7 @@ image:
   pullPolicy: IfNotPresent
 
 env:
-  RUNTZ_MCP_HTTP: ":8080"
-  RUNTZ_ENDPOINT: "https://engine.runtz.dev"
+  RUNTZ_MCP_ADDR: ":8080"
 
 ingress:
   enabled: true

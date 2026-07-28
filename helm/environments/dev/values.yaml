@@ -13,8 +13,7 @@ image:
   pullPolicy: Always
 
 env:
-  RUNTZ_MCP_HTTP: ":8080"
-  RUNTZ_ENDPOINT: "https://engine-dev.runtz.dev"
+  RUNTZ_MCP_ADDR: ":8080"
 
 ingress:
   enabled: true
