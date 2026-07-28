@@ -30,7 +30,7 @@ import (
 )
 
 // version is overridable at build time with -ldflags "-X main.version=...".
-var version = "1.0.0-rc1"
+var version = "1.0.0-rc2"
 
 const serverName = "runtz-mcp"
 
