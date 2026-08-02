@@ -15,11 +15,9 @@ image:
 env:
   RUNTZ_MCP_ADDR: ":8080"
 
+# Routing is NOT part of this release: mcp-dev.runtz.dev and the cloudflare-tunnel
+# ingress class are specific to our cluster, so the Ingress object lives in the
+# private secrets-helm folder (ingress-dev.yaml) and is applied with kubectl.
+# The chart ships generic ingress support that stays disabled here.
 ingress:
-  enabled: true
-  className: "cloudflare-tunnel"
-  hosts:
-    - host: mcp-dev.runtz.dev
-      paths:
-        - path: /
-          pathType: Prefix
+  enabled: false

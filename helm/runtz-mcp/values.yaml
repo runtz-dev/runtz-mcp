@@ -46,15 +46,24 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+# Disabled and unopinionated by default: set the class your cluster actually
+# runs (nginx, traefik, alb, ...) and your own hostname.
+#
+#   ingress:
+#     enabled: true
+#     className: nginx
+#     hosts:
+#       - host: mcp.example.com
+#         paths:
+#           - path: /
+#             pathType: Prefix
+#     tls:
+#       - secretName: runtz-mcp-tls
+#         hosts:
+#           - mcp.example.com
 ingress:
   enabled: false
   className: ""
   annotations: {}
   hosts: []
-  # Example:
-  # hosts:
-  #   - host: mcp.runtz.dev
-  #     paths:
-  #       - path: /
-  #         pathType: Prefix
   tls: []
