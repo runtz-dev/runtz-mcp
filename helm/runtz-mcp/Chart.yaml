@@ -4,8 +4,8 @@ description: >-
   Hosted runtz MCP server — the streamable HTTP Model Context Protocol endpoint
   that serves the runtz documentation to AI clients (docs-only).
 type: application
-version: 1.0.0-rc2
-appVersion: "1.0.0-rc2"
+version: 1.0.0-rc3
+appVersion: "1.0.0-rc3"
 kubeVersion: ">=1.25.0-0"
 home: https://runtz.dev
 icon: https://runtz.dev/home/brand/runtz-logo-light.svg
