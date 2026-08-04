@@ -22,6 +22,9 @@ curl -fsSL https://runtz.dev/home/docker-compose.yml -o docker-compose.yml
 docker compose up -d
 ```
 
+No secrets are required: browser sessions, API keys and email login codes are
+issued and stored by the engine itself.
+
 Open the platform:
 
 ```txt
@@ -34,20 +37,16 @@ The backend health endpoint is available at:
 http://localhost:8080/health
 ```
 
-MongoDB is available on:
-
-```txt
-localhost:27017
-```
-
-If `8080`, `3000` or `27017` are already in use, change `BACKEND_PORT`, `FRONTEND_PORT`, `MONGODB_PORT` and `NEXT_PUBLIC_API_URL` in `.env`.
+MongoDB is reachable only from the backend over the compose network; it is
+not published to the host. If `8080` or `3000` are already in use, change
+`BACKEND_PORT` and `FRONTEND_PORT` in `.env`.
 
 ## Helm
 
 Add the runtz chart repository, update it, and install the platform:
 
 ```bash
-helm repo add runtz https://runtz.dev/charts
+helm repo add runtz https://helm.runtz.dev
 helm repo update
 helm upgrade --install runtz runtz/runtz \
   --namespace runtz \
@@ -92,8 +91,6 @@ activation, configure your own OAuth apps and set `GOOGLE_CLIENT_ID`,
 PORT=8080
 MONGODB_URI=mongodb://mongodb:27017
 MONGODB_DATABASE=runtz
-JWT_SECRET=change-me-before-sharing
-RUNTZ_INGEST_TOKEN=dev-ingest-token
 RUNTZ_DEPLOYMENT_MODE=self-hosted
 RUNTZ_PUBLIC_URL=http://localhost:3000
 CORS_ALLOWED_ORIGINS=http://localhost:3000
