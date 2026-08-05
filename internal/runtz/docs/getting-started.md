@@ -57,7 +57,7 @@ helm upgrade --install runtz runtz/runtz \
 
 On the first access, runtz asks for:
 
-- `Usuário Admin`
+- `Admin Username`
 - `Password`
 - `Workspace Name`
 

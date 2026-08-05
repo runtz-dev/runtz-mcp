@@ -11,7 +11,7 @@ The `Settings` area has profile, workspace, billing and user administration tabs
 
 Admins can view existing workspaces and create new ones. The first workspace is created during the initial setup.
 
-## Usuários
+## Users
 
 Admins can create users with:
 
@@ -29,8 +29,8 @@ Cloud workspaces use Stripe Checkout for Pro and Enterprise subscriptions. The
 Billing tab shows the current plan and opens the Stripe Customer Portal for card
 changes, cancellation and invoice management.
 
-Self-hosted deployments also use the Billing tab. Click `Comprar Pro` or
-`Comprar Enterprise`, finish Stripe Checkout, and runtz returns to the same
+Self-hosted deployments also use the Billing tab. Click `Buy Pro` or
+`Buy Enterprise`, finish Stripe Checkout, and runtz returns to the same
 installation to activate the license automatically. One license can activate one
 installation, identified by the local installation id. The installation needs
 outbound HTTPS access to `https://engine.runtz.dev` for activation and heartbeat
