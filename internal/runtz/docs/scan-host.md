@@ -18,20 +18,16 @@ It supports Ubuntu/Debian style package inventories and does not scan arbitrary 
 
 ## Run a scan
 
+After a one-time `runtz login`:
+
 ```bash
-cd cli
-go run ./cmd/runtz host \
-  --endpoint https://engine.runtz.dev \
-  --token rtz_live_...
+runtz host
 ```
 
 Use `--hostname` to choose the name shown in the Hosts dashboard:
 
 ```bash
-go run ./cmd/runtz host \
-  --hostname ubuntu-prod-01 \
-  --endpoint https://engine.runtz.dev \
-  --token rtz_live_...
+runtz host --hostname ubuntu-prod-01
 ```
 
 Use `--rootfs /mnt/ubuntu-root` only when scanning the package database from another mounted root filesystem.

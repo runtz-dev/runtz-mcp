@@ -19,12 +19,10 @@ It does not call Trivy or Grype. The initial implementation supports dpkg-based 
 
 ## Run a scan
 
+After a one-time `runtz login`:
+
 ```bash
-cd cli
-go run ./cmd/runtz container \
-  --image ubuntu:22.04 \
-  --endpoint https://engine.runtz.dev \
-  --token rtz_live_...
+runtz container ubuntu:22.04
 ```
 
 The image name appears in the Container scanning dashboard. Click the image to see the CVEs from the latest scan.
@@ -32,11 +30,7 @@ The image name appears in the Container scanning dashboard. Click the image to s
 For an image that exists only in the local Docker daemon, add `--local`:
 
 ```bash
-go run ./cmd/runtz container \
-  --image myapp:latest \
-  --local \
-  --endpoint https://engine.runtz.dev \
-  --token rtz_live_...
+runtz container myapp:latest --local
 ```
 
 ## CVE matching
