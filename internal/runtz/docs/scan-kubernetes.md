@@ -39,41 +39,30 @@ Initial checks include:
 
 ## Run a cluster scan
 
+After a one-time `runtz login`:
+
 ```bash
-go run ./cmd/runtz k8s \
-  --endpoint https://engine.runtz.dev \
-  --token rtz_live_...
+runtz k8s
 ```
 
 Scan a specific context and namespace:
 
 ```bash
-go run ./cmd/runtz k8s \
-  --context production \
-  --namespace payments \
-  --endpoint https://engine.runtz.dev \
-  --token rtz_live_...
+runtz k8s --context production --namespace payments
 ```
 
 Use `--kubeconfig` when the kubeconfig is not in the default location:
 
 ```bash
-go run ./cmd/runtz k8s \
-  --kubeconfig ~/.kube/prod.yaml \
-  --endpoint https://engine.runtz.dev \
-  --token rtz_live_...
+runtz k8s --kubeconfig ~/.kube/prod.yaml
 ```
 
 ## Scan manifests instead
 
-Use `--path` when you want to scan YAML/JSON manifests from a repository or rendered chart instead of a live cluster:
+Pass a path when you want to scan YAML/JSON manifests from a repository or rendered chart instead of a live cluster:
 
 ```bash
-go run ./cmd/runtz k8s \
-  --path ./helm/runtz/templates \
-  --target production-manifests \
-  --endpoint https://engine.runtz.dev \
-  --token rtz_live_...
+runtz k8s ./helm/runtz/templates --target production-manifests
 ```
 
 ## Stored result
