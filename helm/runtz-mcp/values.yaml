@@ -24,6 +24,14 @@ service:
 # Non-secret configuration rendered into a ConfigMap and injected as env.
 env:
   RUNTZ_MCP_ADDR: ":8080"
+  # OpenTelemetry, off by default. Point this at an OTLP/HTTP collector to get
+  # traces and metrics out of the server, e.g.
+  #   http://signoz-otel-collector.signoz.svc.cluster.local:4318
+  # Empty means no exporter is registered at all — see internal/telemetry.
+  OTEL_EXPORTER_OTLP_ENDPOINT: ""
+  # Extra resource attributes on every span and metric, as key=value pairs,
+  # e.g. deployment.environment=prod,service.namespace=runtz
+  OTEL_RESOURCE_ATTRIBUTES: ""
 
 extraEnv: []
 
