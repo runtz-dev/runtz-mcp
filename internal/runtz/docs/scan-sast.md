@@ -21,21 +21,16 @@ Initial rules detect:
 
 ## Run a scan
 
+After a one-time `runtz login`:
+
 ```bash
-go run ./cmd/runtz sast \
-  --path ./src \
-  --endpoint https://engine.runtz.dev \
-  --token rtz_live_...
+runtz sast ./src
 ```
 
 Use `--project` to choose the name shown in the platform:
 
 ```bash
-go run ./cmd/runtz sast \
-  --path ./services/payments \
-  --project payments-api \
-  --endpoint https://engine.runtz.dev \
-  --token rtz_live_...
+runtz sast ./services/payments --project payments-api
 ```
 
 ## Stored result
