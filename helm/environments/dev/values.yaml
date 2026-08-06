@@ -14,6 +14,11 @@ image:
 
 env:
   RUNTZ_MCP_ADDR: ":8080"
+  # Traces and metrics go to the in-cluster SigNoz collector. ClusterIP only,
+  # so this is the FQDN — the short name would not resolve from the dev
+  # namespace.
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://signoz-otel-collector.signoz.svc.cluster.local:4318"
+  OTEL_RESOURCE_ATTRIBUTES: "deployment.environment=dev,service.namespace=runtz"
 
 # Routing is NOT part of this release: mcp-dev.runtz.dev and the cloudflare-tunnel
 # ingress class are specific to our cluster, so the Ingress object lives in the

@@ -10,8 +10,10 @@ you're done.
 
 - **Zero-install.** runtz runs and maintains this server for you. There is no
   local binary to build or configure.
-- **Zero dependencies.** Implemented with only the Go standard library
-  (JSON-RPC 2.0 over the MCP streamable HTTP transport).
+- **Stdlib protocol implementation.** JSON-RPC 2.0 over the MCP streamable
+  HTTP transport, written against only the Go standard library. The one
+  third-party dependency is the OpenTelemetry SDK, which stays dormant unless
+  you set `OTEL_EXPORTER_OTLP_ENDPOINT`.
 - **Docs-only, on purpose.** This server only ever answers documentation
   questions. Run DevSecOps scans with the [runtz CLI](https://github.com/runtz-dev/runtz-cli)
   directly — scans need your code on the machine running them, which a shared
@@ -69,6 +71,28 @@ helm install runtz-mcp runtz/runtz-mcp \
   --set 'ingress.hosts[0].paths[0].path=/' \
   --set 'ingress.hosts[0].paths[0].pathType=Prefix'
 ```
+
+### OpenTelemetry
+
+The server can export traces and metrics over OTLP/HTTP. It is off by default
+and nothing is sent anywhere until you set an endpoint:
+
+```bash
+helm install runtz-mcp runtz/runtz-mcp \
+  --set env.OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318 \
+  --set env.OTEL_RESOURCE_ATTRIBUTES=deployment.environment=prod
+```
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `RUNTZ_MCP_ADDR` | `:8080` | Listen address |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `""` (disabled) | OTLP/HTTP collector base URL. `http://` sends plaintext, `https://` uses TLS |
+| `OTEL_RESOURCE_ATTRIBUTES` | `""` | Extra resource attributes as `key=value` pairs |
+| `OTEL_SERVICE_NAME` | `runtz-mcp` | Service name reported to the collector |
+| `OTEL_SDK_DISABLED` | `false` | `true` turns telemetry off regardless of the endpoint |
+
+Requests to `/mcp` are traced; the `/healthz` probe is not. Go runtime metrics
+are exported alongside the HTTP ones.
 
 ## Development
 
