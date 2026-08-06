@@ -1,16 +1,19 @@
 // Command runtz-mcp is the offline-docs Model Context Protocol server for
 // runtz. It is a hosted, docs-only HTTP server: it exposes an embedded
 // snapshot of the runtz documentation to any MCP-capable AI client (Claude,
-// Codex, Gemini, and others) over the MCP streamable HTTP transport. It has
-// no third-party dependencies, so it runs anywhere the Go standard library
-// does.
+// Codex, Gemini, and others) over the MCP streamable HTTP transport. The
+// protocol implementation and the docs are pure standard library; the only
+// third-party dependency is the OpenTelemetry SDK, which stays dormant unless
+// a collector endpoint is configured.
 //
 // runtz already runs this server for you — point your MCP client at
 // https://mcp.runtz.dev/mcp, nothing to install. This binary is what the
 // Helm chart in helm/runtz-mcp deploys; running it yourself is only useful
 // for local development of the server itself.
 //
-//	RUNTZ_MCP_ADDR  Listen address (default: ":8080")
+//	RUNTZ_MCP_ADDR               Listen address (default: ":8080")
+//	OTEL_EXPORTER_OTLP_ENDPOINT  OpenTelemetry collector; unset disables
+//	                             telemetry entirely (see internal/telemetry)
 package main
 
 import (
@@ -26,7 +29,11 @@ import (
 
 	"github.com/runtz-dev/runtz-mcp/internal/mcp"
 	"github.com/runtz-dev/runtz-mcp/internal/runtz"
+	"github.com/runtz-dev/runtz-mcp/internal/telemetry"
 	"github.com/runtz-dev/runtz-mcp/internal/tools"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
+	semconv "go.opentelemetry.io/otel/semconv/v1.26.0"
+	"go.opentelemetry.io/otel/trace"
 )
 
 // version is overridable at build time with -ldflags "-X main.version=...".
@@ -56,6 +63,23 @@ func main() {
 func run(logger *log.Logger) error {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
+
+	shutdownTelemetry, err := telemetry.Setup(ctx, telemetry.Service{
+		Name:    serverName,
+		Version: version,
+	}, logger.Printf)
+	if err != nil {
+		return fmt.Errorf("starting telemetry: %w", err)
+	}
+	defer func() {
+		// Its own context: ctx is already cancelled by the time we get here,
+		// and a cancelled context would drop the final batch of spans.
+		flushCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := shutdownTelemetry(flushCtx); err != nil {
+			logger.Printf("failed to flush telemetry: %v", err)
+		}
+	}()
 
 	docs, err := runtz.LoadDocs()
 	if err != nil {
@@ -87,8 +111,14 @@ func serveHTTP(ctx context.Context, logger *log.Logger, server *mcp.Server, addr
 	})
 
 	httpServer := &http.Server{
-		Addr:              addr,
-		Handler:           mux,
+		Addr: addr,
+		Handler: otelhttp.NewHandler(withRoutePattern(mux), "runtz-mcp",
+			otelhttp.WithFilter(func(r *http.Request) bool {
+				// The kubelet hits /healthz on both probes every few seconds.
+				// Tracing that says nothing and drowns out real traffic.
+				return r.URL.Path != "/healthz"
+			}),
+		),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 
@@ -108,6 +138,31 @@ func serveHTTP(ctx context.Context, logger *log.Logger, server *mcp.Server, addr
 		}
 		return err
 	}
+}
+
+// withRoutePattern renames the request span after the ServeMux pattern that
+// will handle it, so a trace reads "/mcp" rather than the generic handler name.
+//
+// It has to resolve the route itself: Go's ServeMux only fills Request.Pattern
+// on the request it passes to the matched handler, which the middleware
+// wrapping the mux never sees. Handler runs the same lookup ServeHTTP is about
+// to run, so this costs one extra match per request and no allocation.
+func withRoutePattern(mux *http.ServeMux) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if _, pattern := mux.Handler(r); pattern != "" {
+			span := trace.SpanFromContext(r.Context())
+			span.SetName(pattern)
+			span.SetAttributes(semconv.HTTPRoute(pattern))
+
+			// The labeler feeds otelhttp's duration histogram, which would
+			// otherwise carry no route at all.
+			if labeler, ok := otelhttp.LabelerFromContext(r.Context()); ok {
+				labeler.Add(semconv.HTTPRoute(pattern))
+			}
+		}
+
+		mux.ServeHTTP(w, r)
+	})
 }
 
 func envOr(key, fallback string) string {
