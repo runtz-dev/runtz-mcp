@@ -2,3 +2,6 @@
 *.test
 *.out
 .DS_Store
+
+# local build artifact from `go build ./cmd/runtz-mcp` (see AGENTS.md checks)
+/runtz-mcp
