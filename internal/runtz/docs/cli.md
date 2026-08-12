@@ -15,6 +15,12 @@ Install it with:
 curl -fsSL https://runtz.dev/install.sh | bash
 ```
 
+On Windows:
+
+```powershell
+irm https://runtz.dev/install.ps1 | iex
+```
+
 ## Authentication
 
 Every scan authenticates with a workspace token generated in the platform
