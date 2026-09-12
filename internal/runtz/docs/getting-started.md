@@ -18,7 +18,7 @@ deployment with Helm.
 Download the compose file and start the platform in detached mode:
 
 ```bash
-curl -fsSL https://runtz.dev/home/docker-compose.yml -o docker-compose.yml
+curl -fsSL https://runtz.dev/docker-compose.yml -o docker-compose.yml
 docker compose up -d
 ```
 
